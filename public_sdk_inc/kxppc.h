@@ -1180,22 +1180,30 @@ Name##.end:
 #define _TEXT$00        .text
 #define _TEXT$01        .text
 
-
 //
 // Internal macros, used by the above (not for programmer use)
 //
 
+/*
 #define __gendescriptor(Name)                   \
         .rdata                                  ;\
         .align  2                               ;\
         .globl  Name                            ;\
 Name:                                           ;\
-        .long   ..##Name, .toc
+        .long   ._.Name, .toc
+*/
+
+#define __gendescriptor(Name)                   \
+        .section .rdata                         ;\
+        .align  2                               ;\
+        .globl  Name                            ;\
+Name:                                           ;\
+        .long   ._.Name, .toc
 
 #define __fntabentry(Name,ExHandler,Data)       \
         .pdata                                  ;\
         .align  2                               ;\
-        .long   ..##Name                        ;\
+        .long   ._.##Name                       ;\
         .long   Name##.end                      ;\
         .long   ExHandler                       ;\
         .long   Data                            ;\
@@ -1204,13 +1212,13 @@ Name:                                           ;\
 #define __begintext(Name)                       \
         .text                                   ;\
         .align  2                               ;\
-        .globl  ..##Name                        ;\
-..##Name:
+        .globl  ._.##Name                       ;\
+._.##Name:
 
 #define __begintext_S(Name,Section)             \
         .section Section                        ;\
         .align  2                               ;\
-        .globl  ..##Name                        ;\
+        .globl  ._.##Name                       ;\
 ..##Name:
 
 //

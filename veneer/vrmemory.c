@@ -321,8 +321,8 @@ VrMemoryInitialize(
 	// Initialize the I/O entry points in the firmware transfer vector.
 	//
 	debug(VRDBG_ENTRY, "VrMemoryInitialize:	BEGIN....\n");
-	(PARC_MEMORY_ROUTINE) SYSTEM_BLOCK->FirmwareVector[MemoryRoutine] =
-														VrGetMemoryDescriptor;
+	PARC_MEMORY_ROUTINE *FirmwareVectorMemoryRoutine = (PARC_MEMORY_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[MemoryRoutine];
+	*FirmwareVectorMemoryRoutine = VrGetMemoryDescriptor;
 	debug(VRDBG_ENTRY, "VrMemoryInitialize:	....END\n");
 }
 

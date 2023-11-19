@@ -190,7 +190,8 @@ DisplayConfig(
 				data += 3;
 			}
 			ConfData += 1;
-			(char *) ConfData = (char *) ConfData + len;
+			char ** ConfDataCharPtr = (char **)&ConfData;
+			*ConfDataCharPtr = (char *) ConfData + len;
 	        warn("\n");
 	    } else {
 	        warn( "\n\t\t%x %x %x\n", ConfData->u.Dma.Channel,

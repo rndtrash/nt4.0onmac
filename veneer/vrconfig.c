@@ -539,29 +539,29 @@ VrConfigInitialize(
 	)
 {
 	debug(VRDBG_ENTRY, "VrConfigInitialize	BEGIN....\n");
-	(PARC_ADD_CHILD_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[AddChildRoutine] = VrAddChild;
+	PARC_ADD_CHILD_ROUTINE *FirmwareVectorAddChildRoutine = (PARC_ADD_CHILD_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[AddChildRoutine];
+	*FirmwareVectorAddChildRoutine = VrAddChild;
 
-	(PARC_DELETE_COMPONENT_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[DeleteComponentRoutine] =
-														VrDeleteComponent;
-	(PARC_GET_CHILD_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetChildRoutine] = VrGetChild;
+	PARC_DELETE_COMPONENT_ROUTINE *FirmwareVectorDeleteComponentRoutine = (PARC_DELETE_COMPONENT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[DeleteComponentRoutine];
+	*FirmwareVectorDeleteComponentRoutine = VrDeleteComponent;
 
-	(PARC_GET_PARENT_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetParentRoutine] = VrGetParent;
+	PARC_GET_CHILD_ROUTINE *FirmwareVectorGetChildRoutine = (PARC_GET_CHILD_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetChildRoutine];
+	*FirmwareVectorGetChildRoutine = VrGetChild;
 
-	(PARC_GET_PEER_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetPeerRoutine] = VrGetPeer;
+	PARC_GET_PARENT_ROUTINE *FirmwareVectorGetParentRoutine = (PARC_GET_PARENT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetParentRoutine];
+	*FirmwareVectorGetParentRoutine = VrGetParent;
 
-	(PARC_GET_DATA_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetDataRoutine] =
-														VrGetConfigurationData;
-	(PARC_GET_COMPONENT_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetComponentRoutine] =
-															VrGetComponent;
-	(PARC_SAVE_CONFIGURATION_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[SaveConfigurationRoutine] =
-															VrSaveConfiguration;
+	PARC_GET_PEER_ROUTINE *FirmwareVectorGetPeerRoutine = (PARC_GET_PEER_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetPeerRoutine];
+	*FirmwareVectorGetPeerRoutine = VrGetPeer;
+
+	PARC_GET_DATA_ROUTINE *FirmwareVectorGetDataRoutine = (PARC_GET_DATA_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetDataRoutine];
+	*FirmwareVectorGetDataRoutine = VrGetConfigurationData;
+
+	PARC_GET_COMPONENT_ROUTINE *FirmwareVectorGetComponentRoutine = (PARC_GET_COMPONENT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetComponentRoutine];
+	*FirmwareVectorGetComponentRoutine = VrGetComponent;
+
+	PARC_SAVE_CONFIGURATION_ROUTINE *FirmwareVectorSaveConfigurationRoutine = (PARC_SAVE_CONFIGURATION_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[SaveConfigurationRoutine];
+	*FirmwareVectorSaveConfigurationRoutine = VrSaveConfiguration;
+	
 	debug(VRDBG_ENTRY, "VrConfigInitialize	....END\n");
 }

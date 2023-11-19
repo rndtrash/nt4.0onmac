@@ -12,8 +12,8 @@
 
 #include "veneer.h"
 
-STATIC VOID doprnt(VOID (*)(), char *, va_list);
-STATIC VOID printbase(VOID (*)(), ULONG x, int base);
+STATIC VOID doprnt(VOID (*)(char), char *, va_list);
+STATIC VOID printbase(VOID (*)(char), ULONG x, int base);
 
 int
 get_bool_prop(phandle node, char *key)
@@ -224,7 +224,7 @@ strcpy(char *to, const char *from)
 {
 	int i = 0;
 
-	while (to[i] = from[i]) {
+	while ((to[i] = from[i])) {
 		i += 1;
 	}
 	return(to);
@@ -243,18 +243,21 @@ strcat(char *to, const char *from)
 }
 
 VOID
-bcopy(char *from, char *to, int len)
+bcopy(const void *__src, void *__dest, size_t __n)
 {
-	while (len--) {
+	char const *from = __src;
+	char *to = __dest;
+	while (__n--) {
 		*to++ = *from++;
 	}
 }
 
 VOID
-bzero(char *cp, int len)
+bzero(void *__s, size_t __n)
 {
-	while (len--) {
-		*(cp + len) = 0;
+	char *cp = __s;
+	while (__n--) {
+		*(cp + __n) = 0;
 	}
 }
 
@@ -338,13 +341,13 @@ again:
 }
 
 char *
-index(char *s, int c)
+index(const char *__s, int __c)
 {
-	while (*s) {
-		if (*s == c) {
-			return (s);
+	while (*__s) {
+		if (*__s == __c) {
+			return (__s);
 		}
-		++s;
+		++__s;
 	}
 	return ((char *) 0);
 }
@@ -544,7 +547,7 @@ sprintf(char *buf, char *fmt, ...)
 }
 
 STATIC VOID
-doprnt(VOID (*func)(), char *fmt, va_list args)
+doprnt(VOID (*func)(char), char *fmt, va_list args)
 {
 	ULONG x;
     LONG l;
@@ -590,7 +593,7 @@ doprnt(VOID (*func)(), char *fmt, va_list args)
 }
 
 STATIC VOID
-printbase(VOID (*func)(), ULONG x, int base)
+printbase(VOID (*func)(char), ULONG x, int base)
 {
 	static char itoa[] = "0123456789abcdef";
 	ULONG j;

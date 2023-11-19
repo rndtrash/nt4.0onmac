@@ -321,6 +321,7 @@ register char *mem; unsigned nbytes;
 	return(newmem);
 }
 
+int
 log2(n)
 register int n;
 {

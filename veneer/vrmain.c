@@ -846,8 +846,8 @@ IdleCPU(PRESTART_BLOCK rstb, int stopFlag)
 	
 		// Pad to make room for BootStatus and SaveArea variables.
 		Bootp = (PULONG) IdleLoop;
-		PCHAR IdleLoopPCHAR = (PCHAR) IdleLoop;
-		IdleLoopPCHAR += 3 * sizeof(ULONG);
+		PCHAR *IdleLoopPCHAR = (PCHAR*) &IdleLoop;
+		*IdleLoopPCHAR += 3 * sizeof(ULONG);
 		IdleLoopSize += 3 * sizeof(ULONG);
 
 		if (CLAIM(IdleLoop, IdleLoopSize) == -1) {

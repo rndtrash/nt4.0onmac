@@ -139,12 +139,13 @@ VrEnvInitialize(VOID)
     // Initialize the I/O entry points in the firmware transfer vector.
     //
     debug(VRDBG_ENTRY, "VrEnvInitialize:  BEGIN......\n");
-    (PARC_GET_ENVIRONMENT_ROUTINE)
-    SYSTEM_BLOCK->FirmwareVector[GetEnvironmentRoutine]
-						= VrGetEnvironmentVariable;
-    (PARC_SET_ENVIRONMENT_ROUTINE)
-    SYSTEM_BLOCK->FirmwareVector[SetEnvironmentRoutine]
-						= VrSetEnvironmentVariable;
+
+    PARC_GET_ENVIRONMENT_ROUTINE *FirmwareVectorGetEnvironmentRoutine = (PARC_GET_ENVIRONMENT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetEnvironmentRoutine];
+    *FirmwareVectorGetEnvironmentRoutine = VrGetEnvironmentVariable;
+
+    PARC_SET_ENVIRONMENT_ROUTINE *FirmwareVectorSetEnvironmentRoutine = (PARC_SET_ENVIRONMENT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[SetEnvironmentRoutine];
+    *FirmwareVectorSetEnvironmentRoutine = VrSetEnvironmentVariable;
+    
     debug(VRDBG_ENTRY, "VrEnvInitialize:	.....END\n");
 }
 

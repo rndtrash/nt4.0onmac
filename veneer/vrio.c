@@ -410,7 +410,8 @@ VrRead(
 			if (ConsoleIn == 0) {
 				(void) VrFindConsolePath("stdin");
 			}
-			while (((LONG)*Count = OFRead(ConsoleIn, Buffer, Length)) <= 0){
+			LONG *CountLONG = Count;
+			while ((*CountLONG = OFRead(ConsoleIn, Buffer, Length)) <= 0){
 				;
 			}
 		}
@@ -1198,25 +1199,28 @@ VrIoInitialize(
 	// Initialize the I/O entry points in the firmware transfer vector.
 	//
 	debug(VRDBG_ENTRY, "VrIoInitialize		BEGIN......\n");
-	(PARC_CLOSE_ROUTINE) SYSTEM_BLOCK->FirmwareVector[CloseRoutine] = VrClose;
-	(PARC_MOUNT_ROUTINE) SYSTEM_BLOCK->FirmwareVector[MountRoutine] = VrMount;
-	(PARC_OPEN_ROUTINE) SYSTEM_BLOCK->FirmwareVector[OpenRoutine] = VrOpen;
-	(PARC_READ_ROUTINE) SYSTEM_BLOCK->FirmwareVector[ReadRoutine] = VrRead;
-	(PARC_SEEK_ROUTINE) SYSTEM_BLOCK->FirmwareVector[SeekRoutine] = VrSeek;
-	(PARC_WRITE_ROUTINE) SYSTEM_BLOCK->FirmwareVector[WriteRoutine] = VrWrite;
+	PARC_CLOSE_ROUTINE *FirmwareVectorCloseRoutine = (PARC_CLOSE_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[CloseRoutine];
+	*FirmwareVectorCloseRoutine = VrClose;
+	PARC_MOUNT_ROUTINE *FirmwareVectorMountRoutine = (PARC_MOUNT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[MountRoutine];
+	*FirmwareVectorMountRoutine = VrMount;
+	PARC_OPEN_ROUTINE *FirmwareVectorOpenRoutine = (PARC_OPEN_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[OpenRoutine];
+	*FirmwareVectorOpenRoutine = VrOpen;
+	PARC_READ_ROUTINE *FirmwareVectorReadRoutine = (PARC_READ_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[ReadRoutine];
+	*FirmwareVectorReadRoutine = VrRead;
+	PARC_SEEK_ROUTINE *FirmwareVectorSeekRoutine = (PARC_SEEK_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[SeekRoutine];
+	*FirmwareVectorSeekRoutine = VrSeek;
+	PARC_WRITE_ROUTINE *FirmwareVectorWriteRoutine = (PARC_WRITE_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[WriteRoutine];
+	*FirmwareVectorWriteRoutine = VrWrite;
 
-	(PARC_READ_STATUS_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[ReadStatusRoutine] = VrGetReadStatus;
+	PARC_READ_STATUS_ROUTINE *FirmwareVectorReadStatusRoutine = (PARC_READ_STATUS_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[ReadStatusRoutine];
+	*FirmwareVectorReadStatusRoutine = VrGetReadStatus;
 
-	(PARC_GET_FILE_INFO_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetFileInformationRoutine] =
-															VrGetFileInformation;
-	(PARC_SET_FILE_INFO_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[SetFileInformationRoutine] =
-															VrSetFileInformation;
-	(PARC_GET_DIRECTORY_ENTRY_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetDirectoryEntryRoutine] =
-															VrGetDirectoryEntry;
+	PARC_GET_FILE_INFO_ROUTINE *FirmwareVectorGetFileInformationRoutine = (PARC_GET_FILE_INFO_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetFileInformationRoutine];
+	*FirmwareVectorGetFileInformationRoutine = VrGetFileInformation;
+	PARC_SET_FILE_INFO_ROUTINE *FirmwareVectorSetFileInformationRoutine = (PARC_SET_FILE_INFO_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[SetFileInformationRoutine];
+	*FirmwareVectorSetFileInformationRoutine = VrSetFileInformation;
+	PARC_GET_DIRECTORY_ENTRY_ROUTINE *FirmwareVectorGetDirectoryEntryRoutine = (PARC_GET_DIRECTORY_ENTRY_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetDirectoryEntryRoutine];
+	*FirmwareVectorGetDirectoryEntryRoutine = VrGetDirectoryEntry;
 
 	//
 	// Initialize the file table.

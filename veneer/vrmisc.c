@@ -148,15 +148,13 @@ VrTimeInitialize(
 	//
 	// Initialize the Time routine addresses in the firmware transfer vector.
 	//
-	(PARC_GET_TIME_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetTimeRoutine] = VrGetTime;
+	PARC_GET_TIME_ROUTINE *FirmwareVectorGetTimeRoutine = (PARC_GET_TIME_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetTimeRoutine];
+	*FirmwareVectorGetTimeRoutine = VrGetTime;
 
-	(PARC_GET_RELATIVE_TIME_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetRelativeTimeRoutine] =
-															VrGetRelativeTime;
-	(PARC_FLUSH_ALL_CACHES_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[FlushAllCachesRoutine] =
-															VrFlushAllCaches;
+	PARC_GET_RELATIVE_TIME_ROUTINE *FirmwareVectorGetRelativeTimeRoutine = (PARC_GET_RELATIVE_TIME_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetRelativeTimeRoutine];
+	*FirmwareVectorGetRelativeTimeRoutine = VrGetRelativeTime;
+	PARC_FLUSH_ALL_CACHES_ROUTINE *FirmwareVectorFlushAllCachesRoutine = (PARC_FLUSH_ALL_CACHES_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[FlushAllCachesRoutine];
+	*FirmwareVectorFlushAllCachesRoutine = VrFlushAllCaches;
 	debug(VRDBG_ENTRY, "VrTimeInitialize	....END\n");
 
 }

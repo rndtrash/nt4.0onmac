@@ -40,7 +40,7 @@ STATIC  CONFIGURATION_NODE *DisplayNode = 0;
 
 STATIC  int convert_node(CONFIGURATION_NODE *);
 STATIC  CONFIGURATION_NODE *convert_controller(CONFIGURATION_NODE *);
-STATIC  CONFIGURATION_NODE *add_new_child(
+CONFIGURATION_NODE *add_new_child(
 	CONFIGURATION_NODE *, char *, CONFIGURATION_CLASS, CONFIGURATION_TYPE);
 STATIC  int convert_name(CONFIGURATION_NODE *);
 STATIC  VOID convert_config(CONFIGURATION_NODE *);
@@ -845,7 +845,7 @@ convert_controller(CONFIGURATION_NODE *node)
  * In this function we take an existing "Controller" node and add a
  * "Peripheral" node as a child.
  */
-STATIC CONFIGURATION_NODE *
+CONFIGURATION_NODE *
 add_new_child(
 	CONFIGURATION_NODE *parent,
 	char *name,
@@ -1373,7 +1373,7 @@ convert_IDE_device(PCONFIGURATION_NODE node)
 #define prl_t   CM_PARTIAL_RESOURCE_LIST
 #define prd_t   CM_PARTIAL_RESOURCE_DESCRIPTOR
 
-STATIC prl_t *
+prl_t *
 grow_prl(PCONFIGURATION_NODE node, int dev_specific)
 {
 	prl_t *prl;
@@ -1741,7 +1741,8 @@ convert_config(CONFIGURATION_NODE *node)
 			}
 
 			if ((prop = OFGetproplen(ph, "arc-interrupt-affinity")) > 0) {
-				(int)(prd->u.Interrupt.Affinity) =
+				int *prduInterruptAffinity = (int *)&prd->u.Interrupt.Affinity;
+				*prduInterruptAffinity =
 									get_int_prop(ph, "arc-interrupt-affinity");
 			}
 

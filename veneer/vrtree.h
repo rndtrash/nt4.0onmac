@@ -50,7 +50,8 @@
 			prd->u.Interrupt.Vector =	\
 				level_equals_vector ?	\
 				    level : default_interrupt_level;		\
-			(int)(prd->u.Interrupt.Affinity) = default_interrupt_affinity;\
+			int *prduInterruptAffinity = (int *)&prd->u.Interrupt.Affinity;\
+			*prduInterruptAffinity = default_interrupt_affinity;\
 			prl->Count += 1;								\
 		}
 

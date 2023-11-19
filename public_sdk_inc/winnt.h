@@ -34,7 +34,8 @@ extern "C" {
 
 #if defined(_M_MRX000) || defined(_M_ALPHA) || defined(_M_PPC)
 //#define UNALIGNED __unaligned
-#define UNALIGNED __attribute__ ((__packed__))
+//#define UNALIGNED __attribute__ ((__packed__))
+#define UNALIGNED __attribute__((aligned(1)))
 #else
 #define UNALIGNED
 #endif

@@ -162,8 +162,7 @@ VrDisplayInitialize(
 	//
 	// Initialize the Display entry points in the firmware transfer vector.
 	//
-	(PARC_GET_DISPLAY_STATUS_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetDisplayStatusRoutine] =
-														VrGetDisplayStatus;
+	PARC_GET_DISPLAY_STATUS_ROUTINE *FirmwareVectorGetDisplayStatusRoutine = (PARC_GET_DISPLAY_STATUS_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetDisplayStatusRoutine];
+	*FirmwareVectorGetDisplayStatusRoutine = VrGetDisplayStatus;
 	debug(VRDBG_ENTRY, "VrDisplayInitialize  .....END\n");
 }

@@ -659,14 +659,14 @@ VrLoadInitialize(
 	)
 {
 	debug(VRDBG_ENTRY, "VrLoadInitialize	BEGIN....\n");
-	(PARC_LOAD_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[LoadRoutine] = VrLoad;
+	PARC_LOAD_ROUTINE *FirmwareVectorLoadRoutine = (PARC_LOAD_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[LoadRoutine];
+	*FirmwareVectorLoadRoutine = VrLoad;
 
-	(PARC_INVOKE_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[InvokeRoutine] = VrInvoke;
+	PARC_INVOKE_ROUTINE *FirmwareVectorInvokeRoutine = (PARC_INVOKE_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[InvokeRoutine];
+	*FirmwareVectorInvokeRoutine = VrInvoke;
 
-	(PARC_EXECUTE_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[ExecuteRoutine] = VrExecute;
+	PARC_EXECUTE_ROUTINE *FirmwareVectorExecuteRoutine = (PARC_EXECUTE_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[ExecuteRoutine];
+	*FirmwareVectorExecuteRoutine = VrExecute;
 
 	SavedArgs = new(SAVED_ARGUMENTS);
 	debug(VRDBG_ENTRY, "VrLoadInitialize	....END\n");
@@ -690,7 +690,6 @@ VrLoadInitialize(
  *  an unsuccessful status.
  *
  */
-STATIC
 ARC_STATUS
 VrRelocateImage(
 	IN ULONG FileId,
@@ -825,7 +824,7 @@ VrRelocateImage(
  *  None.
  *
  */
-STATIC VOID
+VOID
 VrCopyArguments(
 	IN ULONG Argc,
 	IN PCHAR Argv[]

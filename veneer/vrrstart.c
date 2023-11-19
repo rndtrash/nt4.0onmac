@@ -257,18 +257,17 @@ VrRestartInitialize(
 	//
 	// Initialize Restart routine addresses in the firmware transfer vector.
 	//
-	(PARC_INTERACTIVE_MODE_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[InteractiveModeRoutine] =
-													VrEnterInteractiveMode;
-	(PARC_GET_SYSTEM_ID_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[GetSystemIdRoutine] = VrGetSystemId;
-	(PARC_POWERDOWN_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[PowerDownRoutine] = VrPowerDown;
-	(PARC_REBOOT_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[RebootRoutine] = VrReboot;
-	(PARC_RESTART_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[RestartRoutine] = VrRestart;
-	(PARC_HALT_ROUTINE)
-			SYSTEM_BLOCK->FirmwareVector[HaltRoutine] = VrHalt;
+	PARC_INTERACTIVE_MODE_ROUTINE *FirmwareVectorInteractiveModeRoutine = (PARC_INTERACTIVE_MODE_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[InteractiveModeRoutine];
+	*FirmwareVectorInteractiveModeRoutine = VrEnterInteractiveMode;
+	PARC_GET_SYSTEM_ID_ROUTINE *FirmwareVectorGetSystemIdRoutine = (PARC_GET_SYSTEM_ID_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[GetSystemIdRoutine];
+	*FirmwareVectorGetSystemIdRoutine = VrGetSystemId;
+	PARC_POWERDOWN_ROUTINE *FirmwareVectorPowerDownRoutine = (PARC_POWERDOWN_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[PowerDownRoutine];
+	*FirmwareVectorPowerDownRoutine = VrPowerDown;
+	PARC_REBOOT_ROUTINE *FirmwareVectorRebootRoutine = (PARC_REBOOT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[RebootRoutine];
+	*FirmwareVectorRebootRoutine = VrReboot;
+	PARC_RESTART_ROUTINE *FirmwareVectorRestartRoutine = (PARC_RESTART_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[RestartRoutine];
+	*FirmwareVectorRestartRoutine = VrRestart;
+	PARC_HALT_ROUTINE *FirmwareVectorHaltRoutine = (PARC_HALT_ROUTINE *)&SYSTEM_BLOCK->FirmwareVector[HaltRoutine];
+	*FirmwareVectorHaltRoutine = VrHalt;
 	debug(VRDBG_ENTRY, "VrRestartInitialize			....END\n");
 }

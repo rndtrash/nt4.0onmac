@@ -131,7 +131,10 @@ VENEER := obj/$(TARGET_DIRECTORY)/veneer.lib
 # TODO: not sure why 0x50000
 RELOC := 50000
 
-CFLAGS := -nostdlib $(C_DEFINES) -I$(BASEDIR)/public_sdk_inc -I$(BASEDIR)/private_ntos_inc
+CFLAGS := -target powerpc-none-eabi -static -msoft-float -ffreestanding -nostdlib $(C_DEFINES) -I$(BASEDIR)/public_sdk_inc -I$(BASEDIR)/private_ntos_inc
+ASINCLUDEDIRS := $(BASEDIR)/public_sdk_inc
+ASINCLUDE := $(ASINCLUDEDIRS:%=-I%)
+ASFLAGS := $(ASINCLUDE) -filetype=obj --arch=ppc32
 # TODO: might need to be aligned by 0x200
 LDFLAGS := -N --Bstatic -nostdlib -e start -Ttext ${RELOC} -v
 
@@ -143,5 +146,14 @@ bin/veneer.elf: $(OBJECTS)
 bin/%.c.o: %.c Makefile
 	clang $< $(CFLAGS) -c -o $@
 
+bin/%.s.preproc: %.s Makefile
+	cpp -P $< $(ASINCLUDE) -o $@
+
+bin/%.s.o: bin/%.s.preproc Makefile
+	llvm-mc $< $(ASFLAGS) -o $@
+	#cpp -P $< $(ASFLAGS) | powerpc-linux-gnu-as $(ASFLAGS) -o $@
+	#powerpc-linux-gnu-as $< $(ASFLAGS) -o $@
+
 clean:
+	rm -f bin/*.s.preproc
 	rm -f bin/*.o
