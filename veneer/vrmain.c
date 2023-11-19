@@ -27,6 +27,8 @@
 
 #include "veneer.h"
 
+int stack[8192/4 + 4] __attribute__((__used__));
+int (*ClientInterface)(ULONG *args);
 
 int VrDebug = 0;
 BOOLEAN use_bat_mapping;
@@ -103,14 +105,21 @@ extern ULONG VrGetProcRev();
 
 typedef VOID (*VR_NOT_YET_ROUTINE) (VOID);
 
+int call_firmware(ULONG * args)
+{
+	return (*ClientInterface)(args);
+}
+
 int
-vrmain(VOID *resid, VOID *entry, int (cif_handler)(long *))
+vrmain(VOID *unused1, int unused2, int (cif_handler)(ULONG *))
 {
 	ihandle bootih;
 	ULONG FileId;
 	ARC_STATUS res;
 	void (*jump_osloader)(int, char **, char**);
 	extern VOID Salutation();
+
+	ClientInterface = cif_handler;
 
 	Salutation();
 

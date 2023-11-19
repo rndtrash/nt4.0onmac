@@ -15,6 +15,18 @@
 STATIC VOID doprnt(VOID (*)(char), char *, va_list);
 STATIC VOID printbase(VOID (*)(char), ULONG x, int base);
 
+void *
+memcpy(void *dst, const void *src, size_t n)
+{
+	char *_dst = dst;
+	char const *_src = src;
+	
+	while ( n-- )
+	   *_dst++ = *_src++;
+	 
+	return dst;
+}
+
 int
 get_bool_prop(phandle node, char *key)
 {
