@@ -103,7 +103,8 @@ extern ULONG VrGetProcRev();
 
 typedef VOID (*VR_NOT_YET_ROUTINE) (VOID);
 
-main(VOID *resid, VOID *entry, int (cif_handler)(long *))
+int
+vrmain(VOID *resid, VOID *entry, int (cif_handler)(long *))
 {
 	ihandle bootih;
 	ULONG FileId;
@@ -845,7 +846,8 @@ IdleCPU(PRESTART_BLOCK rstb, int stopFlag)
 	
 		// Pad to make room for BootStatus and SaveArea variables.
 		Bootp = (PULONG) IdleLoop;
-		(PCHAR) IdleLoop += 3 * sizeof(ULONG);
+		PCHAR IdleLoopPCHAR = (PCHAR) IdleLoop;
+		IdleLoopPCHAR += 3 * sizeof(ULONG);
 		IdleLoopSize += 3 * sizeof(ULONG);
 
 		if (CLAIM(IdleLoop, IdleLoopSize) == -1) {
@@ -1002,7 +1004,8 @@ VrInitSystem(VOID)
 	// Temporarily make all firmware vector to point to an error routine.
 	//
 	for (i=LoadRoutine; i < MaximumRoutine; i++) {
-		(VR_NOT_YET_ROUTINE)SYSTEM_BLOCK->FirmwareVector[i] = VrNotYet;
+		VR_NOT_YET_ROUTINE *FirmwareVectorNotYetRoutine = (VR_NOT_YET_ROUTINE*)&SYSTEM_BLOCK->FirmwareVector[i];
+		*FirmwareVectorNotYetRoutine = VrNotYet;
 	}
 
 	//

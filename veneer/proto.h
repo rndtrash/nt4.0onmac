@@ -56,14 +56,14 @@ int strncasecmp(const char *s, const char *t, size_t len);
 size_t strlen(const char *s);
 char * strcpy(char *to, const char *from);
 char * strcat(char *to, const char *from);
-VOID bcopy(char *from, char *to, int len);
-VOID bzero(char *cp, int len);
+//VOID bcopy(char *from, char *to, int len); // defined in strings.h
+//VOID bzero(char *cp, int len);
 VOID * zalloc(int size);
 VOID sleep(ULONG delay);
 int claim(void *adr, int bytes);
 VOID * alloc(int size, int align);
 int atoi(char *s);
-char * index(char *s, int c);
+//char * index(char *s, int c);
 char * strcsep(char *s, const char sep);
 char * strctok(char *s, const char sep);
 char * capitalize(char *s);

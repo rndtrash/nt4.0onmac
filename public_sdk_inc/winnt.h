@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include <ctype.h>  
+#include <wchar.h>
 #define ANYSIZE_ARRAY 1       
 
 #if defined(_M_MRX000) && !(defined(MIDL_PASS) || defined(RC_INVOKED)) && defined(ENABLE_RESTRICTED)
@@ -32,7 +33,8 @@ extern "C" {
 #endif
 
 #if defined(_M_MRX000) || defined(_M_ALPHA) || defined(_M_PPC)
-#define UNALIGNED __unaligned
+//#define UNALIGNED __unaligned
+#define UNALIGNED __attribute__ ((__packed__))
 #else
 #define UNALIGNED
 #endif
@@ -173,8 +175,8 @@ typedef WORD   LANGID;
 
 #define _DWORDLONG_
 #if (!defined(MIDL_PASS) || defined(__midl)) && (!defined(_M_IX86) || (defined(_INTEGRAL_MAX_BITS) && _INTEGRAL_MAX_BITS >= 64))
-typedef __int64 LONGLONG;
-typedef unsigned __int64 DWORDLONG;
+typedef __int64_t LONGLONG;
+typedef __uint64_t DWORDLONG;
 
 #define MAXLONGLONG                      (0x7fffffffffffffff)
 #else

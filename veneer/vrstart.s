@@ -27,7 +27,7 @@ start:
 	 * r7   client program argument length
 	 *
 	 * Note that we're receiving all our arguments in registers;
-	 * if we call C subroutines before calling main we'll
+	 * if we call C subroutines before calling vrmain we'll
 	 * have to save state...so it might not be best to use bzero()
 	 * (unless we recode it in assembler).
 	 */
@@ -48,17 +48,17 @@ skip_toc:
 	lwz     r2, 0(r2)
 
 	/*
-	 * Now we know where we are. Store the cif_handler, find main,
+	 * Now we know where we are. Store the cif_handler, find vrmain,
 	 * and jump to it.
 	 */
 	lwz     r8, [toc]CifHandler(rtoc)
 	stw     r5, 0(r8)
 
-	.extern main
-	lwz     r8, [toc]main(rtoc)
+	.extern vrmain
+	lwz     r8, [toc]vrmain(rtoc)
 	lwz     r8, 0(r8)
 	mtspr   ctr, r8
-	bctrl                           // call main()
+	bctrl                           // call vrmain()
 
 	/*
 	 * We should never get back here.
