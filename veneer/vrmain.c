@@ -27,10 +27,11 @@
 
 #include "veneer.h"
 
-int stack[8192/4 + 4] __attribute__((__used__));
+//int stack[8192/4 + 4] __attribute__((__used__));
+int stack[65536/4 + 4] __attribute__((__used__));
 int (*ClientInterface)(ULONG *args);
 
-int VrDebug = 0;
+int VrDebug = 0xFFFFFFFF;
 BOOLEAN use_bat_mapping;
 
 /*
@@ -526,9 +527,9 @@ find_boot_dev(VOID)
 		return;
 	}
 	Bootpath = NodeToArcPath(node);
-	bootpath = (char *)malloc(strlen(Bootpath) + strlen("partition(1)") + 1);
+	bootpath = (char *)malloc(strlen(Bootpath) + strlen("partition(0)") + 1);
 	strcpy(bootpath, Bootpath);
-	strcat(bootpath, "partition(1)");		/* XXX */
+	strcat(bootpath, "partition(0)");		/* XXX */
 	free(Bootpath);
 	Bootpath = bootpath;
 	debug(VRDBG_MAIN, "find_boot_dev: bootpath '%s'\n", Bootpath);

@@ -59,11 +59,19 @@ load_file(ihandle bootih)
 		fatal("Couldn't read entire file header: got %d\n", res);
 	}
 
+	{
+		int *filehdrc = (int *)&FileHdr;
+		for (int i = 0; i < IMAGE_SIZEOF_FILE_HEADER / sizeof(int); i++) {
+			debug(VRDBG_MAIN, "HDR: %x\n", filehdrc[i]);
+		}
+	}
+
 	/*
 	 * Sanity check.
 	 */
 	if (FileHdr.Machine != IMAGE_FILE_MACHINE_POWERPC) {
-		fatal("Wrong machine type: %x\n", FileHdr.Machine);
+		// TODO: add the big endian machine type
+		//fatal("Wrong machine type: %x\n", FileHdr.Machine);
 	}
 #ifdef NOT
 	/*

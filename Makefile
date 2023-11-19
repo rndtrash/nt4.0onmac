@@ -6,7 +6,24 @@ export
 
 .PHONY: clean qemu veneer
 
-all: veneer/bin/veneer.elf
+all: bin/nt4.0.iso
+
+bin/nt4.0.iso: veneer/bin/veneer.elf
+	mkdir -p ./dmg_mount/ppc
+	cp veneer/bin/veneer.elf ./dmg_mount/ppc
+	genisoimage \
+		-joliet-long -r \
+		-V 'Windows NT' \
+		-o bin/nt4.0.iso \
+		--iso-level 4 \
+		--netatalk -hfs -probe \
+		-map hfs.map \
+		-hfs-parms MAX_XTCSIZE=2656248 \
+		--chrp-boot \
+		-part -no-desktop \
+		-hfs-bless ppc \
+		-hfs-volid WinNT_boot \
+		./dmg_mount/
 
 veneer/bin/veneer.elf: veneer
 
@@ -15,9 +32,8 @@ veneer:
 
 clean:
 	make -C veneer clean
+	rm -f bin/*.iso
 	rm -f bin/*.o
 
-qemu:
-	# TODO:
-	# qemu-system-ppc -L openbios-ppc -boot d -M mac99 -m 256 -cdrom bin/hellorld.iso -device VGA,edid=on
-	qemu-system-ppc -L openbios-ppc -boot d -M mac99 -m 256 -device VGA,edid=on
+qemu: bin/nt4.0.iso
+	qemu-system-ppc -L openbios-ppc -boot d -M mac99 -m 256 -cdrom bin/nt4.0.iso -device VGA,edid=on

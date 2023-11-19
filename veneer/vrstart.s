@@ -50,6 +50,9 @@ start:
 	lis %r1, stack@ha
 	addi %r1, %r1, stack@l
 	addi %r1, %r1, 8192
+	addi %r1, %r1, 8192
+	addi %r1, %r1, 8192
+	addi %r1, %r1, 8192
 
 	mfmsr %r8
 	li %r0, 0

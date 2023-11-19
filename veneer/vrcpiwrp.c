@@ -220,7 +220,9 @@ OFOpen( char *devicename)
 
 	debug(VRDBG_OF, "OFOpen('%s')\n", devicename);
 	argarray[VR_CIF_HANDLER_IN+0] = (long)devicename;
-	if (call_firmware(argarray) != 0) {
+	int ret = call_firmware(argarray);
+	if (ret != 0) {
+		debug(VRDBG_OF, "OFOpen('%s')=%i\n", devicename, ret);
 		return (ihandle)0;
 	}
 	return ((ihandle) argarray[VR_CIF_HANDLER_IN+1]);
