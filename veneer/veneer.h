@@ -65,6 +65,14 @@ Revision History:
 // Define common macros....
 //
 
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#	define LE32BE(_a_)    (_a_)
+#	define LE16BE(_a_)    (_a_)
+#else
+#	define LE32BE(n) __builtin_bswap32(n)
+#	define LE16BE(n) __builtin_bswap16(n)
+#endif
+
 //----------------------------------------------------------------
 //
 // IEEE 1275-1994 definitions

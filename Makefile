@@ -36,4 +36,4 @@ clean:
 	rm -f bin/*.o
 
 qemu: bin/nt4.0.iso
-	qemu-system-ppc -L openbios-ppc -boot d -M mac99 -m 256 -cdrom bin/nt4.0.iso -device VGA,edid=on
+	qemu-system-ppc -L openbios-ppc -boot d -M mac99 -m 2048 -cdrom bin/nt4.0.iso -device VGA,edid=on

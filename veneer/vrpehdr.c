@@ -45,14 +45,6 @@ Revision History:
 			 IMAGE_FILE_32BIT_MACHINE	| \
 			 IMAGE_FILE_LINE_NUMS_STRIPPED)
 
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#	define LE32BE(_a_)    (_a_)
-#	define LE16BE(_a_)    (_a_)
-#else
-#	define LE32BE(n) __builtin_bswap32(n)
-#	define LE16BE(n) __builtin_bswap16(n)
-#endif
-
 void *
 load_file(ihandle bootih)
 {
@@ -114,11 +106,13 @@ load_file(ihandle bootih)
 	 * We assume the SizeOfImage field is sufficient.
 	 */
 	OptHdr.ImageBase = LE32BE(OptHdr.ImageBase);
+	OptHdr.SizeOfImage = LE32BE(OptHdr.SizeOfImage);
 	BaseAddr = (PCHAR) OptHdr.ImageBase;
 	if (CLAIM(BaseAddr, OptHdr.SizeOfImage) == -1) {
 		fatal("Couldn't claim %x bytes of VM at %x\n",
 	        OptHdr.SizeOfImage, BaseAddr);
 	}
+	debug(VRDBG_MAIN, "BaseAddr: %x\n", BaseAddr);
 	bzero(BaseAddr, OptHdr.SizeOfImage);
 
 	/*
@@ -149,6 +143,7 @@ load_file(ihandle bootih)
 			    hdr->PointerToRawData);
 		}
 		hdr->VirtualAddress = LE32BE(hdr->VirtualAddress);
+		debug(VRDBG_MAIN, "Addr: %s=%x\n", hdr->Name, hdr->VirtualAddress);
 		res = OFRead(bootih,
 		    (PCHAR) hdr->VirtualAddress + (ULONG) BaseAddr,
 		    hdr->SizeOfRawData);
@@ -159,5 +154,10 @@ load_file(ihandle bootih)
 	}
 	free((char *)SecHdr);
 
+	OptHdr.AddressOfEntryPoint = LE32BE(OptHdr.AddressOfEntryPoint);
+	debug(VRDBG_MAIN, "POE: %x\n", OptHdr.AddressOfEntryPoint);
+	debug(VRDBG_MAIN, "*POE: %x\n", LE32BE(*((unsigned int*)(BaseAddr + OptHdr.AddressOfEntryPoint))));
 	return (void *)(BaseAddr + OptHdr.AddressOfEntryPoint);
+	// TODO: rndtrash: wtf???
+	//return (void *)LE32BE(*((unsigned int*)(BaseAddr + OptHdr.AddressOfEntryPoint)));
 }

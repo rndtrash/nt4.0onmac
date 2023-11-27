@@ -197,6 +197,7 @@ vrmain(VOID *unused1, int unused2, int (cif_handler)(ULONG *))
 	bootih = FileTable[FileId].IHandle;
 	//OFSeek(bootih, 0, 0);
 	jump_osloader = load_file(bootih);
+	jump_osloader = (void *)LE32BE(*((__uint32_t *)jump_osloader));
 	VrClose(FileId);
 	//VrFlushAllCaches(); /* XXX: rndtrash: commented out because it hung the QEMU */
 
