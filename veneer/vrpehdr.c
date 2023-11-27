@@ -45,6 +45,14 @@ Revision History:
 			 IMAGE_FILE_32BIT_MACHINE	| \
 			 IMAGE_FILE_LINE_NUMS_STRIPPED)
 
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#	define LE32BE(_a_)    (_a_)
+#	define LE16BE(_a_)    (_a_)
+#else
+#	define LE32BE(n) __builtin_bswap32(n)
+#	define LE16BE(n) __builtin_bswap16(n)
+#endif
+
 void *
 load_file(ihandle bootih)
 {
@@ -59,19 +67,21 @@ load_file(ihandle bootih)
 		fatal("Couldn't read entire file header: got %d\n", res);
 	}
 
+	// TODO:
 	{
-		int *filehdrc = (int *)&FileHdr;
-		for (int i = 0; i < IMAGE_SIZEOF_FILE_HEADER / sizeof(int); i++) {
-			debug(VRDBG_MAIN, "HDR: %x\n", filehdrc[i]);
+		char *filehdrc = (char *)&FileHdr;
+		for (int i = 0; i < IMAGE_SIZEOF_FILE_HEADER; i++) {
+			debug(VRDBG_MAIN, "HDR: %x\n", (unsigned char)filehdrc[i]);
 		}
 	}
 
 	/*
 	 * Sanity check.
 	 */
+	FileHdr.Machine = LE16BE(FileHdr.Machine);
 	if (FileHdr.Machine != IMAGE_FILE_MACHINE_POWERPC) {
 		// TODO: add the big endian machine type
-		//fatal("Wrong machine type: %x\n", FileHdr.Machine);
+		fatal("Wrong machine type: %x\n", FileHdr.Machine);
 	}
 #ifdef NOT
 	/*
@@ -83,7 +93,8 @@ load_file(ihandle bootih)
 		    FileHdr.Characteristics);
 	}
 #endif
-	
+
+	FileHdr.SizeOfOptionalHeader = LE16BE(FileHdr.SizeOfOptionalHeader);
 	size = FileHdr.SizeOfOptionalHeader;
 	if ((res = OFRead(bootih, (char *) &OptHdr, size)) != size) {
 		fatal("Couldn't read optional header: expect %x got %x\n",
@@ -93,6 +104,7 @@ load_file(ihandle bootih)
 	/*
 	 * More sanity.
 	 */
+	OptHdr.Magic = LE16BE(OptHdr.Magic);
 	if (OptHdr.Magic != 0x010b) {
 		fatal("Wrong magic number in header: %x\n", OptHdr.Magic);
 	}
@@ -101,6 +113,7 @@ load_file(ihandle bootih)
 	 * Compute image size and claim memory at specified virtual address.
 	 * We assume the SizeOfImage field is sufficient.
 	 */
+	OptHdr.ImageBase = LE32BE(OptHdr.ImageBase);
 	BaseAddr = (PCHAR) OptHdr.ImageBase;
 	if (CLAIM(BaseAddr, OptHdr.SizeOfImage) == -1) {
 		fatal("Couldn't claim %x bytes of VM at %x\n",
@@ -111,6 +124,7 @@ load_file(ihandle bootih)
 	/*
 	 * Allocate section headers.
 	 */
+	FileHdr.NumberOfSections = LE16BE(FileHdr.NumberOfSections);
 	size = FileHdr.NumberOfSections * sizeof(IMAGE_SECTION_HEADER);
 	SecHdr = (PIMAGE_SECTION_HEADER) malloc(size);
 	if ((res = OFRead(bootih, (char *) SecHdr, size)) != size) {
@@ -125,13 +139,16 @@ load_file(ihandle bootih)
 	for (i = 0; i < FileHdr.NumberOfSections; ++i) {
 		hdr = &SecHdr[i];
 		debug(VRDBG_PE, "Processing section %d: %s\n", i, hdr->Name);
+		hdr->SizeOfRawData = LE32BE(hdr->SizeOfRawData);
 		if (hdr->SizeOfRawData == 0) {
 			continue;
 		}
+		hdr->PointerToRawData = LE32BE(hdr->PointerToRawData);
 		if (OFSeek(bootih, 0, hdr->PointerToRawData) == -1) {
 			fatal("seek to offset %x failed\n",
 			    hdr->PointerToRawData);
 		}
+		hdr->VirtualAddress = LE32BE(hdr->VirtualAddress);
 		res = OFRead(bootih,
 		    (PCHAR) hdr->VirtualAddress + (ULONG) BaseAddr,
 		    hdr->SizeOfRawData);

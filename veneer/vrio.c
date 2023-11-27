@@ -86,7 +86,7 @@
 //
 // File Table definition
 //
-FILE_TABLE_ENTRY FileTable[FILE_TABLE_SIZE];
+FILE_TABLE_ENTRY FileTable[FILE_TABLE_SIZE] = {{ 0 }};
 
 
 //

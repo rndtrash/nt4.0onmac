@@ -28,10 +28,10 @@
 #include "veneer.h"
 
 //int stack[8192/4 + 4] __attribute__((__used__));
-int stack[65536/4 + 4] __attribute__((__used__));
+int stack[32768/4 + 4] __attribute__((__used__));
 int (*ClientInterface)(ULONG *args);
 
-int VrDebug = 0xFFFFFFFF;
+int VrDebug = 0xFFFFFFFF; //& ~VRDBG_TREE;
 BOOLEAN use_bat_mapping;
 
 /*
@@ -45,6 +45,7 @@ char *SystemPath = 0;
 
 #define STR_XYZZY		"xyzzy"
 #define STR_OSLOADER	"\\os\\winnt\\osloader.exe"
+//#define STR_OSLOADER	"\\ppc\\veneer.elf"
 #define STR_OSLOADFN	"\\WINNT"
 #define STR_OSLOADPART  STR_XYZZY
 #define STR_LDIDENT		"Windows NT 3.5"
@@ -194,9 +195,10 @@ vrmain(VOID *unused1, int unused2, int (cif_handler)(ULONG *))
 
 	debug(VRDBG_MAIN, "main: setup boot ihandle, jump_osloader handle...\n");
 	bootih = FileTable[FileId].IHandle;
+	//OFSeek(bootih, 0, 0);
 	jump_osloader = load_file(bootih);
 	VrClose(FileId);
-	VrFlushAllCaches();
+	//VrFlushAllCaches(); /* XXX: rndtrash: commented out because it hung the QEMU */
 
 	debug(VRDBG_MAIN, "main: create memory descriptor list...\n");
 	VrCreateMemoryDescriptors();
@@ -529,7 +531,8 @@ find_boot_dev(VOID)
 	Bootpath = NodeToArcPath(node);
 	bootpath = (char *)malloc(strlen(Bootpath) + strlen("partition(0)") + 1);
 	strcpy(bootpath, Bootpath);
-	strcat(bootpath, "partition(0)");		/* XXX */
+	// TODO: rndtrash: find a proper way to find the main partition
+	strcat(bootpath, "partition(2)");		/* XXX */
 	free(Bootpath);
 	Bootpath = bootpath;
 	debug(VRDBG_MAIN, "find_boot_dev: bootpath '%s'\n", Bootpath);
