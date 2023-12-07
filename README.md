@@ -2,7 +2,7 @@
 
 This repository contains a lot of leaked Windows NT 4.0 source code. By reading it, you lose the right to contribute to ReactOS. Oh, well.
 
-This is an attempt at running the Windows NT 4.0 kernel on a PowerPC Apple computers.
+This is an attempt at running the Windows NT 4.0 kernel on the PowerPC Apple computers.
 
 ## TODO
 
