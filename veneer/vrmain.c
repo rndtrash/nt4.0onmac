@@ -31,7 +31,8 @@
 int stack[32768/4 + 4] __attribute__((__used__));
 int (*ClientInterface)(ULONG *args);
 
-int VrDebug = 0xFFFFFFFF; //& ~VRDBG_TREE;
+//int VrDebug = 0xFFFFFFFF; //& ~VRDBG_TREE;
+int VrDebug = VRDBG_MAIN | VRDBG_ENTRY;
 BOOLEAN use_bat_mapping;
 
 /*
@@ -208,14 +209,15 @@ vrmain(VOID *unused1, int unused2, int (cif_handler)(ULONG *))
 	}
 
 	if (VrDebug & VRDBG_HOLDIT) {
-	
 		warn("Jumping to 0x%x\n", (char *)jump_osloader);
+		warn("*0x%x=%x\n", (char*)jump_osloader, *((int*)jump_osloader));
 		puts("This time for sure!");
 		OFEnter();
 	} else {
 		puts("\233H\233J");			// Clear screen
 	}
 	debug(VRDBG_MAIN, "main: launch OSLOADER!!! ...\n");
+	//__builtin_debugtrap();
 	jump_osloader(VrArgc, VrArgv, VrEnvp);
 	OFExit();
 	return (0);

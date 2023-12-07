@@ -63,7 +63,7 @@ load_file(ihandle bootih)
 	{
 		char *filehdrc = (char *)&FileHdr;
 		for (int i = 0; i < IMAGE_SIZEOF_FILE_HEADER; i++) {
-			debug(VRDBG_MAIN, "HDR: %x\n", (unsigned char)filehdrc[i]);
+			//debug(VRDBG_MAIN, "HDR: %x\n", (unsigned char)filehdrc[i]);
 		}
 	}
 
